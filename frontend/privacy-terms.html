@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy & Terms of Service - Sign Language Translator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ffd700', // Yellow color for the header
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-primary p-4">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="homepage.html" class="text-2xl font-bold">SLT</a>
+            <div class="hidden md:flex space-x-4">
+                <a href="homepage.html" class="hover:underline transition duration-300">Home</a>
+                <a href="faq.html" class="hover:underline transition duration-300">FAQ</a>
+                <a href="about.html" class="hover:underline transition duration-300">About</a>
+                <a href="privacy-terms.html" class="hover:underline transition duration-300">Privacy & Terms</a>
+            </div>
+            <button class="md:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4" role="main" x-data="{ activeTab: 'privacy' }">
+        <h1 class="text-4xl font-bold mb-8 text-center animate-fadeIn">Privacy Policy & Terms of Service</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 animate-fadeIn">
+            <div class="flex mb-4">
+                <button @click="activeTab = 'privacy'" :class="{ 'bg-primary text-black': activeTab === 'privacy', 'bg-gray-200': activeTab !== 'privacy' }" class="px-4 py-2 rounded-l">Privacy Policy</button>
+                <button @click="activeTab = 'terms'" :class="{ 'bg-primary text-black': activeTab === 'terms', 'bg-gray-200': activeTab !== 'terms' }" class="px-4 py-2 rounded-r">Terms of Service</button>
+            </div>
+
+            <div x-show="activeTab === 'privacy'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                <h2 class="text-2xl font-bold mb-4">Privacy Policy</h2>
+                <p class="mb-4">At Sign Language Translator, we are committed to protecting your privacy and ensuring the security of your personal information. This Privacy Policy outlines how we collect, use, and safeguard your data when you use our services.</p>
+                
+                <h3 class="text-xl font-bold mb-2">Information We Collect</h3>
+                <p class="mb-4">We collect information you provide directly to us, such as your name, email address, and any feedback or comments you submit. We also automatically collect certain information about your device and how you interact with our website.</p>
+                
+                <h3 class="text-xl font-bold mb-2">How We Use Your Information</h3>
+                <p class="mb-4">We use the information we collect to provide, maintain, and improve our services, to communicate with you, and to comply with legal obligations. We do not sell your personal information to third parties.</p>
+                
+                <h3 class="text-xl font-bold mb-2">Data Security</h3>
+                <p class="mb-4">We implement appropriate technical and organizational measures to protect your personal information against unauthorized or unlawful processing, accidental loss, destruction, or damage.</p>
+            </div>
+
+            <div x-show="activeTab === 'terms'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak>
+                <h2 class="text-2xl font-bold mb-4">Terms of Service</h2>
+                <p class="mb-4">By using the Sign Language Translator website and services, you agree to comply with and be bound by the following terms and conditions:</p>
+                
+                <h3 class="text-xl font-bold mb-2">Use of Service</h3>
+                <p class="mb-4">You agree to use our services only for lawful purposes and in accordance with these Terms. You are responsible for maintaining the confidentiality of your account information.</p>
+                
+                <h3 class="text-xl font-bold mb-2">Intellectual Property</h3>
+                <p class="mb-4">The content, features, and functionality of the Sign Language Translator website are owned by us and are protected by international copyright, trademark, patent, trade secret, and other intellectual property laws.</p>
+                
+                <h3 class="text-xl font-bold mb-2">Limitation of Liability</h3>
+                <p class="mb-4">We strive to provide accurate and reliable translation services, but we cannot guarantee 100% accuracy. We are not liable for any damages or losses resulting from your use of our services.</p>
+                
+                <h3 class="text-xl font-bold mb-2">Changes to Terms</h3>
+                <p class="mb-4">We reserve the right to modify these terms at any time. We will notify users of any significant changes via email or through a notice on our website.</p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container mx-auto text-center py-4">
+        <p>© 2024 Sign Language Translator. All rights reserved.</p>
+    </footer>
+</body>
+</html>

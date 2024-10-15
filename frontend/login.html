@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Signup - Sign Language Translator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#ffd700', // Yellow color for the header
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="https://unpkg.com/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <style>
+        [x-cloak] { display: none !important; }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .animate-fadeIn {
+            animation: fadeIn 1s ease-in-out;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-primary p-4">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="homepage.html" class="text-2xl font-bold">SLT</a>
+            <div class="hidden md:flex space-x-4">
+                <a href="homepage.html" class="hover:underline transition duration-300">Home</a>
+                <a href="faq.html" class="hover:underline transition duration-300">FAQ</a>
+                <a href="about.html" class="hover:underline transition duration-300">About</a>
+                <a href="privacy-terms.html" class="hover:underline transition duration-300">Privacy & Terms</a>
+            </div>
+            <button class="md:hidden">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4" role="main" x-data="{ activeTab: 'login' }">
+        <h1 class="text-4xl font-bold mb-8 text-center animate-fadeIn">Welcome to SLT</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 animate-fadeIn max-w-md mx-auto">
+            <div class="flex mb-4">
+                <button @click="activeTab = 'login'" :class="{ 'bg-primary text-black': activeTab === 'login', 'bg-gray-200': activeTab !== 'login' }" class="w-1/2 px-4 py-2 rounded-l">Login</button>
+                <button @click="activeTab = 'signup'" :class="{ 'bg-primary text-black': activeTab === 'signup', 'bg-gray-200': activeTab !== 'signup' }" class="w-1/2 px-4 py-2 rounded-r">Sign Up</button>
+            </div>
+
+            <div x-show="activeTab === 'login'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label for="loginEmail" class="block mb-1">Email:</label>
+                        <input type="email" id="loginEmail" name="loginEmail" required class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="loginPassword" class="block mb-1">Password:</label>
+                        <input type="password" id="loginPassword" name="loginPassword" required class="w-full p-2 border rounded">
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            <span class="text-sm">Remember me</span>
+                        </label>
+                        <a href="#" class="text-sm text-blue-500 hover:underline">Forgot password?</a>
+                    </div>
+                    <a href="dashboard.html">
+                        <button type="submit" class="w-full bg-primary text-black px-4 py-2 rounded hover:bg-opacity-80 transition duration-300"><a href="dashboard.html" class="hover:underline transition duration-300">Login</a></button>
+                    </a>
+                </form>
+            </div>
+
+            <div x-show="activeTab === 'signup'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak>
+                <form id="signupForm" class="space-y-4">
+                    <div>
+                        <label for="signupName" class="block mb-1">Full Name:</label>
+                        <input type="text" id="signupName" name="signupName" required class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="signupEmail" class="block mb-1">Email:</label>
+                        <input type="email" id="signupEmail" name="signupEmail" required class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="signupPassword" class="block mb-1">Password:</label>
+                        <input type="password" id="signupPassword" name="signupPassword" required class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="signupConfirmPassword" class="block mb-1">Confirm Password:</label>
+                        <input type="password" id="signupConfirmPassword" name="signupConfirmPassword" required class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label class="flex items-center">
+                            <input type="checkbox" required class="mr-2">
+                            <span class="text-sm">I agree to the <a href="privacy-terms.html" class="text-blue-500 hover:underline">Terms of Service</a></span>
+                        </label>
+                    </div>
+                    <a href="dashboard.html"></a>
+                    <button type="submit" class="w-full bg-primary text-black px-4 py-2 rounded hover:bg-opacity-80 transition duration-300"><a href="dashboard.html" class="hover:underline transition duration-300">Sign Up</a></button>
+                    </a>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="container mx-auto text-center py-4">
+        <p>© 2024 Sign Language Translator. All rights reserved.</p>
+    </footer>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Login functionality would be implemented here.');
+        });
+
+        document.getElementById('signupForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            alert('Sign up functionality would be implemented here.');
+        });
+    </script>
+</body>
+</html>

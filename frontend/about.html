@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLT - About</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFD700',
+                        secondary: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+    </style>
+</head>
+<body class="bg-white text-secondary">
+    <header class="bg-primary p-4">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="homepage.html" class="text-2xl font-bold">SLT</a>
+            <ul class="hidden md:flex space-x-4">
+                <li><a href="homepage.html" class="hover:underline">Home</a></li>
+                <li><a href="translator.html" class="hover:underline">Translator</a></li>
+                <li><a href="about.html" class="hover:underline">About</a></li>
+                <li><a href="faq.html" class="hover:underline">FAQ</a></li>
+                <li><a href="dashboard.html" class="hover:underline">Dashboard</a></li>
+            </ul>
+            <button class="md:hidden" @click="mobileMenu = !mobileMenu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4">
+        <h1 class="text-4xl font-bold mb-8 text-center">About Sign Language Translator</h1>
+
+        <div class="grid md:grid-cols-2 gap-8">
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Our Mission</h2>
+                <p class="mb-4">At Sign Language Translator (SLT), our mission is to break down communication barriers and foster inclusivity for individuals with verbal and hearing disabilities. We believe that everyone deserves the opportunity to communicate effectively and connect with others, regardless of their abilities.</p>
+                <p>Through cutting-edge AI technology and a user-friendly platform, we're working to make sign language translation accessible to all, promoting understanding and empowerment in communities worldwide.</p>
+            </div>
+            <div>
+                <h2 class="text-2xl font-bold mb-4">Our Technology</h2>
+                <p class="mb-4">SLT utilizes advanced machine learning algorithms and computer vision technology to provide accurate, real-time translations of sign language to text and speech. Our system is constantly learning and improving, thanks to our dedicated team of researchers and the valuable input from our growing community of users.</p>
+                <p>We support multiple sign languages from around the world and are continually expanding our language database to serve a global audience.</p>
+            </div>
+        </div>
+
+        <div class="mt-8">
+            <h2 class="text-2xl font-bold mb-4">Our Team</h2>
+            <div class="grid md:grid-cols-3 gap-4">
+                <div class="bg-gray-100 p-4 rounded">
+                    <h3 class="font-bold">Jakharia Priyank</h3>
+                    <p>220200107051</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded">
+                    <h3 class="font-bold">Dave Rahul</h3>
+                    <p>220200107028</p>
+                </div>
+                <div class="bg-gray-100 p-4 rounded">
+                    <h3 class="font-bold">Jadeja Ghanshyam</h3>
+                    <p>220200107050</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-primary p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Sign Language Translator. All rights reserved.</p>
+        </div>
+    </footer>
+</body>
+</html>

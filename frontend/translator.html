@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLT - Translator</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFD700',
+                        secondary: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-primary to-white min-h-screen text-secondary">
+    <header class="bg-primary p-4 shadow-md">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="homepage.html" class="text-2xl font-bold">SLT</a>
+            <ul class="hidden md:flex space-x-4">
+                <li><a href="homepage.html" class="hover:underline transition duration-300">Home</a></li>
+                <li><a href="translator.html" class="hover:underline transition duration-300">Translator</a></li>
+                <li><a href="about.html" class="hover:underline transition duration-300">About</a></li>
+                <li><a href="faq.html" class="hover:underline transition duration-300">FAQ</a></li>
+                <li><a href="dashboard.html" class="hover:underline transition duration-300">Dashboard</a></li>
+            </ul>
+            <button class="md:hidden" @click="mobileMenu = !mobileMenu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4" x-data="{ translationMode: 'signToText', inputText: '', outputText: '', isTranslating: false }">
+        <h1 class="text-4xl font-bold mb-8 text-center animate-fadeIn">Sign Language Translator</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 animate-fadeIn">
+            <div class="mb-4">
+                <label class="block mb-2 font-bold">Translation Mode:</label>
+                <div class="flex justify-center space-x-4">
+                    <button @click="translationMode = 'signToText'" :class="{ 'bg-primary': translationMode === 'signToText', 'bg-gray-200': translationMode !== 'signToText' }" class="py-2 px-4 rounded transition duration-300">
+                        Sign to Text
+
+                        
+                    </button>
+                    <button @click="translationMode = 'textToSign'" :class="{ 'bg-primary': translationMode === 'textToSign', 'bg-gray-200': translationMode !== 'textToSign' }" class="py-2 px-4 rounded transition duration-300">
+                        Text to Sign
+                    </button>
+                </div>
+                
+            </div>
+
+            <div class="mb-4" x-show="translationMode === 'signToText'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100">
+                <label class="block mb-2 font-bold">Upload Sign Language Video:</label>
+                <input type="file" accept="video/*" class="w-full p-2 border rounded">
+            </div>
+            <template x-if="translationMode === 'signToText' && inputMethod === 'live'">
+                <div class="mb-4">
+                    <label class="block mb-2">Live Camera Input:</label>
+                    <video x-ref="video" class="w-full h-64 bg-black" autoplay></video>
+                </div>
+            </template>
+            <div class="mb-4" x-show="translationMode === 'textToSign'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100">
+                <label class="block mb-2 font-bold">Enter Text:</label>
+                <textarea x-model="inputText" class="w-full p-2 border rounded" rows="4"></textarea>
+            </div>
+
+            <button @click="translate()" class="bg-primary text-secondary font-bold py-2 px-4 rounded hover:bg-yellow-400 transition duration-300 transform hover:scale-105">
+                <span x-show="!isTranslating">Translate</span>
+                <span x-show="isTranslating">Translating...</span>
+            </button>
+        </div>
+
+        <div class="mt-8 bg-white rounded-lg shadow-lg p-6 animate-fadeIn" x-show="outputText" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 transform scale-90" x-transition:enter-end="opacity-100 transform scale-100">
+            <h2 class="text-2xl font-bold mb-4">Translation Result:</h2>
+            <div x-text="outputText" class="p-4 border rounded bg-gray-100 min-h-[100px]"></div>
+        </div>
+    </main>
+
+    <footer class="bg-primary p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Sign Language Translator. All rights reserved.</p>
+        </div>
+        
+    </footer>
+
+    <script>
+        function translate() {
+            this.isTranslating = true;
+            setTimeout(() => {
+                if (this.translationMode === 'signToText') {
+                    this.outputText = "This is a simulated translation of sign language to text. In a real application, this would be the result of processing the uploaded video.";
+                } else {
+                    this.outputText = "This is a simulated translation of text to sign language. In a real application, this would display animated sign language or instructions for signing the input text.";
+                }
+                this.isTranslating = false;
+            }, 1500);
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SLT - User Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFD700',
+                        secondary: '#000000',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        [x-cloak] { display: none !important; }
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .animate-fadeIn { animation: fadeIn 0.5s ease-out; }
+    </style>
+</head>
+<body class="bg-gradient-to-b from-primary to-white min-h-screen text-secondary">
+    <header class="bg-primary p-4 shadow-md">
+        <nav class="container mx-auto flex justify-between items-center">
+            <a href="homepage.html" class="text-2xl font-bold">SLT</a>
+            <ul class="hidden md:flex space-x-4">
+                <li><a href="homepage.html" class="hover:underline transition duration-300">Home</a></li>
+                <li><a href="translator.html" class="hover:underline transition duration-300">Translator</a></li>
+                <li><a href="about.html" class="hover:underline transition duration-300">About</a></li>
+                <li><a href="faq.html" class="hover:underline transition duration-300">FAQ</a></li>
+                <li><a href="dashboard.html" class="hover:underline transition duration-300">Dashboard</a></li>
+            </ul>
+            <button class="md:hidden" @click="mobileMenu = !mobileMenu">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </nav>
+    </header>
+
+    <main class="container mx-auto p-4" x-data="{ activeTab: 'summary' }">
+        <h1 class="text-4xl font-bold mb-8 text-center animate-fadeIn">User Dashboard</h1>
+
+        <div class="bg-white rounded-lg shadow-lg p-6 mb-8 animate-fadeIn">
+            <div class="flex mb-4">
+                <button @click="activeTab = 'summary'" :class="{ 'bg-primary': activeTab === 'summary' }" class="py-2 px-4 font-bold rounded-t-lg transition duration-300">Summary</button>
+                <button @click="activeTab = 'translations'" :class="{ 'bg-primary': activeTab === 'translations' }" class="py-2 px-4 font-bold rounded-t-lg transition duration-300">Recent Translations</button>
+                <button @click="activeTab = 'settings'" :class="{ 'bg-primary': activeTab === 'settings' }" class="py-2 px-4 font-bold rounded-t-lg transition duration-300">Settings</button>
+            </div>
+
+            <div x-show="activeTab === 'summary'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
+                <h2 class="text-2xl font-bold mb-4">Usage Summary</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="font-bold mb-2">Total Translations</h3>
+                        <p class="text-3xl font-bold">1,234</p>
+                    </div>
+                    <div class="bg-gray-100 p-4 rounded-lg">
+                        <h3 class="font-bold mb-2">Languages Used</h3>
+                        <p class="text-3xl font-bold">3</p>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <h3 class="font-bold mb-2">Translation Activity</h3>
+                    <canvas id="activityChart" width="400" height="200"></canvas>
+                </div>
+            </div>
+
+            <div x-show="activeTab === 'translations'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak>
+                <h2 class="text-2xl font-bold mb-4">Recent Translations</h2>
+                <ul class="space-y-4">
+                    <li class="bg-gray-100 p-4 rounded-lg">
+                        <p class="font-bold">Sign to Text: "Hello, how are you?"</p>
+                        <p class="text-sm text-gray-600">2 hours ago</p>
+                    </li>
+                    <li class="bg-gray-100 p-4 rounded-lg">
+                        <p class="font-bold">Text to Sign: "Thank you for your help"</p>
+                        <p class="text-sm text-gray-600">Yesterday</p>
+                    </li>
+                    <li class="bg-gray-100 p-4 rounded-lg">
+                        <p class="font-bold">Sign to Text: "Where is the nearest restaurant?"</p>
+                        <p class="text-sm text-gray-600">3 days ago</p>
+                    </li>
+                </ul>
+            </div>
+
+            <div x-show="activeTab === 'settings'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak>
+                <h2 class="text-2xl font-bold mb-4">Settings</h2>
+                <form>
+                    <div class="mb-4">
+                        <label for="preferred_language" class="block mb-2 font-bold">Preferred Sign Language:</label>
+                        <select id="preferred_language" name="preferred_language" class="w-full p-2 border rounded">
+                            <option value="asl">American Sign Language (ASL)</option>
+                            <option value="bsl">British Sign Language (BSL)</option>
+                            <option value="auslan">Auslan</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block mb-2 font-bold">Notification Preferences:</label>
+                        <label class="flex items-center">
+                            <input type="checkbox" class="mr-2">
+                            Email notifications
+                        </label>
+                        <label class="flex items-center mt-2">
+                            <input type="checkbox" class="mr-2">
+                            Push notifications
+                        </label>
+                    </div>
+                    <button type="submit" class="bg-primary text-secondary font-bold py-2 px-4 rounded hover:bg-yellow-400 transition duration-300 transform hover:scale-105">
+                        Save Settings
+                    </button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-primary p-4 mt-8">
+        <div class="container mx-auto text-center">
+            <p>&copy; 2024 Sign Language Translator. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('alpine:init', () => {
+            const ctx = document.getElementById('activityChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Translations',
+                        data: [12, 19, 3, 5, 2, 3],
+                        borderColor: '#FFD700',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>
