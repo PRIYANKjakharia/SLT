@@ -8,7 +8,7 @@
     <style>
         :root {
             --primary-yellow: #FFD700;
-            --secondary-yellow: #FFA500;
+            --secondary-yellow: #ff8c00;
             --text-dark: #333333;
             --text-light: #FFFFFF;
         }
@@ -33,7 +33,7 @@
         }
 
         header {
-            background-color: var(--primary-yellow);
+            background-color: rgba(255, 215, 0, 0.9);
             padding: 20px 0;
             position: fixed;
             width: 100%;
@@ -43,7 +43,7 @@
         }
 
         header.scrolled {
-            background-color: var(--secondary-yellow);
+            background-color: rgba(255, 165, 0, 0.95);
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
@@ -80,7 +80,10 @@
         }
 
         .hero {
-            background: linear-gradient(135deg, var(--primary-yellow), var(--secondary-yellow));
+            background-image: linear-gradient(rgba(255, 215, 0, 0.7), rgba(255, 165, 0, 0.7)), url('https://preview.redd.it/j8vbyqpqp7461.png?width=2955&format=png&auto=webp&s=053c6ff154aa7f3ede9e08d9d06a55934eb88af6');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -91,6 +94,10 @@
 
         .hero-content {
             max-width: 800px;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         h1 {
@@ -126,6 +133,7 @@
 
         .features {
             padding: 100px 0;
+            background-color: #f9f9f9;
         }
 
         .features-grid {
@@ -205,16 +213,16 @@
                 <li><a href="about.html">About</a></li>
                 <li><a href="privacy-terms.html">Privacy & Terms</a></li>
             </ul>
-            <div class="mobile-menu-btn">
+            <!-- <div class="mobile-menu-btn">
                 <i class="fas fa-bars"></i>
-            </div>
+            </div> -->
         </nav>
     </header>
 
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1>Welcome to Sign Language Translator</h1>
-            <p>Breaking communication barriers with cutting-edge AI technology</p>
+            <h1>Welcome to <br> Sign Language Translator</h1>
+            <p>Breaking communication barriers</p>
             <a href="login.html" class="cta-button">Start Translating</a>
         </div>
     </section>
@@ -235,7 +243,7 @@
                 <div class="feature-card">
                     <i class="fas fa-brain feature-icon"></i>
                     <h3>AI-Powered</h3>
-                    <p>Advanced machine learning for accurate translations</p>
+                    <p>machine learning for accurate translations</p>
                 </div>
                 <div class="feature-card">
                     <i class="fas fa-users feature-icon"></i>
