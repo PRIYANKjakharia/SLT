@@ -55,7 +55,154 @@
         translations: [],
         loading: true,
         message: '',
-        error: ''
+        error: '',
+        
+        // Load dashboard data
+        async loadDashboardData() {
+            const token = this.checkAuth();
+            if (!token) return;
+
+            console.log('Loading dashboard data...');
+            this.error = '';
+
+            try {
+                // Load user info
+                console.log('Fetching user profile...');
+                const userResponse = await fetch(`${API_BASE}/profile`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('User response status:', userResponse.status);
+                if (userResponse.ok) {
+                    const userData = await userResponse.json();
+                    this.userInfo = userData.user;
+                    console.log('User info loaded:', this.userInfo);
+                } else {
+                    const errorData = await userResponse.json();
+                    console.error('User profile error:', errorData);
+                    this.error = `Failed to load user profile: ${errorData.error || 'Unknown error'}`;
+                }
+
+                // Load statistics
+                console.log('Fetching statistics...');
+                const statsResponse = await fetch(`${API_BASE}/stats`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Stats response status:', statsResponse.status);
+                if (statsResponse.ok) {
+                    const statsData = await statsResponse.json();
+                    this.stats = statsData;
+                    console.log('Stats loaded:', this.stats);
+                } else {
+                    const errorData = await statsResponse.json();
+                    console.error('Stats error:', errorData);
+                    this.error = `Failed to load statistics: ${errorData.error || 'Unknown error'}`;
+                }
+
+                // Load recent translations
+                console.log('Fetching translations...');
+                const translationsResponse = await fetch(`${API_BASE}/translations?limit=10`, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                console.log('Translations response status:', translationsResponse.status);
+                if (translationsResponse.ok) {
+                    const translationsData = await translationsResponse.json();
+                    this.translations = translationsData.translations;
+                    console.log('Translations loaded:', this.translations);
+                } else {
+                    const errorData = await translationsResponse.json();
+                    console.error('Translations error:', errorData);
+                    this.error = `Failed to load translations: ${errorData.error || 'Unknown error'}`;
+                }
+
+                // Initialize chart after data is loaded
+                setTimeout(() => {
+                    this.initializeChart();
+                }, 100);
+
+            } catch (error) {
+                console.error('Error loading dashboard data:', error);
+                this.error = `Network error: ${error.message}. Please check if the backend server is running.`;
+            } finally {
+                this.loading = false;
+                console.log('Dashboard loading completed');
+            }
+        },
+
+        // Check authentication
+        checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return token;
+        },
+
+        // Format date
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            const now = new Date();
+            const diffTime = Math.abs(now - date);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            
+            if (diffDays === 1) return '1 day ago';
+            if (diffDays < 7) return `${diffDays} days ago`;
+            return date.toLocaleDateString();
+        },
+
+        // Initialize chart
+        initializeChart() {
+            const ctx = document.getElementById('activityChart');
+            if (!ctx) return;
+
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+                    datasets: [{
+                        label: 'Translations',
+                        data: [2, 1, 3, 4, 2, 3],
+                        borderColor: '#FFD700',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        },
+
+        // Save settings
+        async saveSettings() {
+            this.message = 'Settings saved successfully!';
+            setTimeout(() => {
+                this.message = '';
+            }, 3000);
+        },
+
+        // Logout
+        logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            window.location.href = 'login.html';
+        }
     }" x-init="loadDashboardData()">
         <h1 class="text-4xl font-bold mb-8 text-center animate-fadeIn">User Dashboard</h1>
 
@@ -151,153 +298,6 @@
     <script>
         // API base URL
         const API_BASE = 'http://localhost:3000/api';
-
-        // Check authentication
-        function checkAuth() {
-            const token = localStorage.getItem('authToken');
-            if (!token) {
-                window.location.href = 'login.html';
-                return false;
-            }
-            return token;
-        }
-
-        // Load dashboard data
-        async function loadDashboardData() {
-            const token = checkAuth();
-            if (!token) return;
-
-            console.log('Loading dashboard data...');
-            this.error = '';
-
-            try {
-                // Load user info
-                console.log('Fetching user profile...');
-                const userResponse = await fetch(`${API_BASE}/profile`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                console.log('User response status:', userResponse.status);
-                if (userResponse.ok) {
-                    const userData = await userResponse.json();
-                    this.userInfo = userData.user;
-                    console.log('User info loaded:', this.userInfo);
-                } else {
-                    const errorData = await userResponse.json();
-                    console.error('User profile error:', errorData);
-                    this.error = `Failed to load user profile: ${errorData.error || 'Unknown error'}`;
-                }
-
-                // Load statistics
-                console.log('Fetching statistics...');
-                const statsResponse = await fetch(`${API_BASE}/stats`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                console.log('Stats response status:', statsResponse.status);
-                if (statsResponse.ok) {
-                    const statsData = await statsResponse.json();
-                    this.stats = statsData;
-                    console.log('Stats loaded:', this.stats);
-                } else {
-                    const errorData = await statsResponse.json();
-                    console.error('Stats error:', errorData);
-                    this.error = `Failed to load statistics: ${errorData.error || 'Unknown error'}`;
-                }
-
-                // Load recent translations
-                console.log('Fetching translations...');
-                const translationsResponse = await fetch(`${API_BASE}/translations?limit=10`, {
-                    headers: {
-                        'Authorization': `Bearer ${token}`,
-                        'Content-Type': 'application/json'
-                    }
-                });
-
-                console.log('Translations response status:', translationsResponse.status);
-                if (translationsResponse.ok) {
-                    const translationsData = await translationsResponse.json();
-                    this.translations = translationsData.translations;
-                    console.log('Translations loaded:', this.translations);
-                } else {
-                    const errorData = await translationsResponse.json();
-                    console.error('Translations error:', errorData);
-                    this.error = `Failed to load translations: ${errorData.error || 'Unknown error'}`;
-                }
-
-                // Initialize chart
-                this.$nextTick(() => {
-                    initializeChart();
-                });
-
-            } catch (error) {
-                console.error('Error loading dashboard data:', error);
-                this.error = `Network error: ${error.message}. Please check if the backend server is running.`;
-            } finally {
-                this.loading = false;
-                console.log('Dashboard loading completed');
-            }
-        }
-
-        // Format date
-        function formatDate(dateString) {
-            const date = new Date(dateString);
-            const now = new Date();
-            const diffTime = Math.abs(now - date);
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-            
-            if (diffDays === 1) return '1 day ago';
-            if (diffDays < 7) return `${diffDays} days ago`;
-            return date.toLocaleDateString();
-        }
-
-        // Initialize chart
-        function initializeChart() {
-            const ctx = document.getElementById('activityChart');
-            if (!ctx) return;
-
-            new Chart(ctx, {
-                type: 'line',
-                data: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-                    datasets: [{
-                        label: 'Translations',
-                        data: [2, 1, 3, 4, 2, 3],
-                        borderColor: '#FFD700',
-                        tension: 0.1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        }
-
-        // Save settings
-        async function saveSettings() {
-            this.message = 'Settings saved successfully!';
-            setTimeout(() => {
-                this.message = '';
-            }, 3000);
-        }
-
-        // Logout
-        function logout() {
-            localStorage.removeItem('authToken');
-            localStorage.removeItem('userInfo');
-            window.location.href = 'login.html';
-        }
     </script>
 </body>
 </html>

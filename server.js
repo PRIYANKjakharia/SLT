@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path');
 const fs = require('fs');
+const nodemailer = require('nodemailer');
 
 // Load environment variables from config.env if .env doesn't exist
 if (!fs.existsSync('.env') && fs.existsSync('config.env')) {
@@ -261,6 +262,38 @@ app.get('/api/stats', authenticateToken, (req, res) => {
             });
         }
     );
+});
+
+// Support/Feedback mailing endpoint
+app.post('/api/support', async (req, res) => {
+    const { name, email, message } = req.body;
+    if (!name || !email || !message) {
+        return res.status(400).json({ error: 'All fields are required.' });
+    }
+
+    // Configure transporter (use your SMTP provider or Gmail for demo)
+    let transporter = nodemailer.createTransport({
+        service: 'gmail',
+        auth: {
+            user: process.env.SMTP_USER, // your email
+            pass: process.env.SMTP_PASS  // your email app password
+        }
+    });
+
+    const mailOptions = {
+        from: email,
+        to: 'priyankjakharia2005@gmail.com',
+        subject: `SLT Support Message from ${name}`,
+        text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        res.json({ message: 'Support message sent successfully!' });
+    } catch (error) {
+        console.error('Error sending support email:', error);
+        res.status(500).json({ error: 'Failed to send email. Please try again later.' });
+    }
 });
 
 // Error handling middleware

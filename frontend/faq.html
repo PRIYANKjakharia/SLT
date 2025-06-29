@@ -46,7 +46,12 @@
     <main class="container mx-auto p-4">
         <h1 class="text-4xl font-bold mb-8 text-center animate-fadeIn">FAQ and Support</h1>
 
-        <div class="mb-8 bg-white rounded-lg shadow-lg p-6" x-data="{ activeTab: 'faq' }">
+        <div class="mb-8 bg-white rounded-lg shadow-lg p-6" x-data="{ 
+            activeTab: 'faq',
+            supportForm: { name: '', email: '', message: '' },
+            sending: false,
+            supportMessage: ''
+        }">
             <div class="flex mb-4">
                 <button @click="activeTab = 'faq'" :class="{ 'bg-primary': activeTab === 'faq' }" class="py-2 px-4 font-bold rounded-t-lg transition duration-300">FAQ</button>
                 <button @click="activeTab = 'support'" :class="{ 'bg-primary': activeTab === 'support' }" class="py-2 px-4 font-bold rounded-t-lg transition duration-300">Support</button>
@@ -76,21 +81,25 @@
             </div>
 
             <div x-show="activeTab === 'support'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100" x-cloak>
-                <form class="max-w-lg mx-auto">
+                <!-- Support message display -->
+                <div x-show="supportMessage" x-text="supportMessage" :class="supportMessage.includes('success') ? 'text-green-600 bg-green-100' : 'text-red-600 bg-red-100'" class="mb-4 p-3 rounded text-center"></div>
+                
+                <form @submit.prevent="sendSupportMessage()" class="max-w-lg mx-auto">
                     <div class="mb-4">
                         <label for="name" class="block mb-2 font-bold">Name:</label>
-                        <input type="text" id="name" name="name" required class="w-full p-2 border rounded">
+                        <input type="text" id="name" name="name" x-model="supportForm.name" required class="w-full p-2 border rounded">
                     </div>
                     <div class="mb-4">
                         <label for="email" class="block mb-2 font-bold">Email:</label>
-                        <input type="email" id="email" name="email" required class="w-full p-2 border rounded">
+                        <input type="email" id="email" name="email" x-model="supportForm.email" required class="w-full p-2 border rounded">
                     </div>
                     <div class="mb-4">
                         <label for="message" class="block mb-2 font-bold">Message:</label>
-                        <textarea id="message" name="message" required class="w-full p-2 border rounded" rows="4"></textarea>
+                        <textarea id="message" name="message" x-model="supportForm.message" required class="w-full p-2 border rounded" rows="4"></textarea>
                     </div>
-                    <button type="submit" class="bg-primary text-secondary font-bold py-2 px-4 rounded hover:bg-yellow-400 transition duration-300 transform hover:scale-105">
-                        Send Message
+                    <button type="submit" :disabled="sending" class="bg-primary text-secondary font-bold py-2 px-4 rounded hover:bg-yellow-400 transition duration-300 transform hover:scale-105 disabled:opacity-50">
+                        <span x-show="!sending">Send Message</span>
+                        <span x-show="sending">Sending...</span>
                     </button>
                 </form>
             </div>
@@ -103,5 +112,41 @@
             <p>DE Project SLT (Team 661025)</p>
         </div>
     </footer>
+
+    <script>
+        // API base URL
+        const API_BASE = 'http://localhost:3000/api';
+
+        // Send support message
+        async function sendSupportMessage() {
+            this.sending = true;
+            this.supportMessage = '';
+
+            try {
+                const response = await fetch(`${API_BASE}/support`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(this.supportForm)
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    this.supportMessage = '✅ ' + data.message;
+                    // Clear form
+                    this.supportForm = { name: '', email: '', message: '' };
+                } else {
+                    this.supportMessage = '❌ ' + (data.error || 'Failed to send message');
+                }
+            } catch (error) {
+                console.error('Error sending support message:', error);
+                this.supportMessage = '❌ Network error. Please try again.';
+            } finally {
+                this.sending = false;
+            }
+        }
+    </script>
 </body>
 </html>
