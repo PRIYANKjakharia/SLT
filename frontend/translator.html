@@ -51,6 +51,10 @@
                 <li><a href="faq.html" class="hover:underline transition duration-300">FAQ</a></li>
                 <li><a href="dashboard.html" class="hover:underline transition duration-300">Dashboard</a></li>
             </ul>
+            <div class="flex items-center space-x-4">
+                <span id="userDisplay" class="font-semibold"></span>
+                <button onclick="logout()" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition duration-300">Logout</button>
+            </div>
             <button class="md:hidden" @click="mobileMenu = !mobileMenu">
                 <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
@@ -87,7 +91,10 @@
 
             <div id="textToSign" style="display: none;" class="mb-4">
                 <label class="block mb-2 font-bold">Enter Text:</label>
-                <textarea class="w-full p-2 border rounded" rows="4"></textarea>
+                <textarea id="textInput" class="w-full p-2 border rounded" rows="4" placeholder="Enter text to convert to sign language..."></textarea>
+                <button onclick="convertTextToSign()" class="mt-2 bg-primary text-secondary font-bold py-2 px-4 rounded hover:bg-yellow-400 transition duration-300">
+                    Convert to Sign
+                </button>
             </div>
         </div>
     </main>
@@ -97,16 +104,108 @@
             <p>DE Project SLT (Team 661025)</p>        
         </div>
     </footer>
+
     <!-- for translation -->
     <script type="text/javascript">
+        // API base URL
+        const API_BASE = 'http://localhost:3000/api';
+        
         // Your exact model URL
         const URL = "https://teachablemachine.withgoogle.com/models/oSqjKu4L7/";
         let model, webcam, labelContainer, maxPredictions;
+        let lastSavedPrediction = null;
+        let saveTimeout = null;
+
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            displayUserInfo();
+        });
+
+        // Check if user is authenticated
+        function checkAuth() {
+            const token = localStorage.getItem('authToken');
+            if (!token) {
+                window.location.href = 'login.html';
+                return false;
+            }
+            return token;
+        }
+
+        // Display user info
+        function displayUserInfo() {
+            const userInfo = localStorage.getItem('userInfo');
+            if (userInfo) {
+                const user = JSON.parse(userInfo);
+                document.getElementById('userDisplay').textContent = user.username;
+            }
+        }
+
+        // Logout function
+        function logout() {
+            localStorage.removeItem('authToken');
+            localStorage.removeItem('userInfo');
+            window.location.href = 'login.html';
+        }
 
         // Function to show/hide translation modes
         function showMode(mode) {
             document.getElementById('signToText').style.display = mode === 'signToText' ? 'block' : 'none';
             document.getElementById('textToSign').style.display = mode === 'textToSign' ? 'block' : 'none';
+            
+            // Update button styles
+            const buttons = document.querySelectorAll('button[onclick^="showMode"]');
+            buttons.forEach(button => {
+                if (button.onclick.toString().includes(mode)) {
+                    button.className = 'py-2 px-4 rounded transition duration-300 bg-primary';
+                } else {
+                    button.className = 'py-2 px-4 rounded transition duration-300 bg-gray-200';
+                }
+            });
+        }
+
+        // Save translation to backend
+        async function saveTranslation(translationData) {
+            const token = checkAuth();
+            if (!token) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/translations`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify(translationData)
+                });
+
+                if (response.ok) {
+                    console.log('Translation saved successfully');
+                } else {
+                    console.error('Failed to save translation');
+                }
+            } catch (error) {
+                console.error('Error saving translation:', error);
+            }
+        }
+
+        // Convert text to sign (placeholder functionality)
+        function convertTextToSign() {
+            const textInput = document.getElementById('textInput').value.trim();
+            if (!textInput) {
+                alert('Please enter some text to convert');
+                return;
+            }
+
+            // Save translation
+            saveTranslation({
+                translation_type: 'textToSign',
+                input_text: textInput,
+                output_text: 'Sign language representation',
+                confidence: 1.0
+            });
+
+            alert(`Converting "${textInput}" to sign language...\n(This feature is under development)`);
         }
 
         // Initialize the model and webcam
@@ -172,6 +271,26 @@
                         confidence > 0.7 ? '#f0fdf4' : // High confidence (green tint)
                         confidence > 0.3 ? '#fef3c7' : // Medium confidence (yellow tint)
                         '#fee2e2';  // Low confidence (red tint)
+
+                    // Save translation if confidence is high enough and it's a new prediction
+                    if (confidence > 0.7 && prediction[i].className !== lastSavedPrediction) {
+                        lastSavedPrediction = prediction[i].className;
+                        
+                        // Clear previous timeout
+                        if (saveTimeout) {
+                            clearTimeout(saveTimeout);
+                        }
+                        
+                        // Save after a short delay to avoid spam
+                        saveTimeout = setTimeout(() => {
+                            saveTranslation({
+                                translation_type: 'signToText',
+                                input_text: prediction[i].className,
+                                output_text: prediction[i].className,
+                                confidence: confidence
+                            });
+                        }, 2000); // Save after 2 seconds of stable prediction
+                    }
                 }
             } catch (error) {
                 console.error('Prediction error:', error);

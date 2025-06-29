@@ -54,10 +54,10 @@
 
             <div x-show="activeTab === 'faq'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0" x-transition:enter-end="opacity-100">
                 <div x-data="{ faqItems: [
-                    { question: 'How accurate is the sign language translation?', answer: 'Our AI-powered translation system achieves an accuracy rate of over 95% for most common signs and phrases. However, accuracy may vary for more complex or regional signs.' },
-                    { question: 'Which sign languages are supported?', answer: 'We currently support American Sign Language (ASL), British Sign Language (BSL), and International Sign. We are continuously working to add more languages.' },
-                    { question: 'Is the service free to use?', answer: 'We offer a free tier with limited translations per day. For unlimited use and additional features, we have premium subscription plans available.' },
-                    { question: 'Can I use the translator offline?', answer: 'Currently, our service requires an internet connection for real-time translations. We are working on developing an offline mode for future releases.' }
+                    { question: 'How accurate is the sign language translation?', answer: 'Our translation system achieves an accuracy rate of over 75% for most common signs and phrases. However, accuracy may vary for more complex or regional signs.' },
+                    { question: 'Which sign languages are supported?', answer: 'We currently support basic 4 signs of British Sign Language (BSL). We are continuously working to add more languages.' },
+                    { question: 'Is the service free to use?', answer: 'yes it is free to use...' },
+                    { question: 'Can I use the translator offline?', answer: 'yes' }
                 ]}">
                     <template x-for="(item, index) in faqItems" :key="index">
                         <div class="mb-4" x-data="{ open: false }">
